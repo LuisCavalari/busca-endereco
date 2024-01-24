@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('address')->group(function () {
+    Route::post('/', [AddressController::class, 'store']);
+    Route::get('/', [AddressController::class, 'index']);
+    Route::get('/{address}', [AddressController::class, 'show']);
+    Route::put('/{address}', [AddressController::class, 'update']);
+    Route::delete('/{address}', [AddressController::class, 'delete']);
 });

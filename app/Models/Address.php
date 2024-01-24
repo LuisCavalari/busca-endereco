@@ -17,6 +17,7 @@ class Address extends Model
         'neighborhood',
         'city',
         'state',
-        'country'
+        'country',
+        'zip_code'
     ];
 }
