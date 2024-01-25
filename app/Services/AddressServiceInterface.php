@@ -8,7 +8,7 @@ interface AddressServiceInterface
 {
     public function getAllAddresses();
 
-    public function updateAddress(Address $address, AddressDTO $addressData);
+    public function updateAddress(Address $address, array $updatedData);
 
     public function getAddressById(Address $address);
 

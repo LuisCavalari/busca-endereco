@@ -1,12 +1,26 @@
 <template>
     <div class="search-area">
-        <input type="text" class="cep" placeholder="CEP">
-        <input type="text" placeholder="Endereço">
-        <div class="search-button">
+        <input v-model="cep" type="number" class="cep" placeholder="CEP">
+        <input v-model="address" type="text" placeholder="Endereço">
+        <div class="search-button" @click="handleSearch">
             Pesquisar
         </div>
     </div>
 </template>
+<script setup>
+    import { ref } from 'vue'
+
+    const emit = defineEmits(['search'])
+
+    const cep = ref('')
+    const address = ref('')
+
+    const handleSearch = () => {
+        const searchTerm = `${address.value} ${cep.value}`
+        emit('search', searchTerm)
+    }
+
+</script>
 
 <style scoped>
 .search-area {

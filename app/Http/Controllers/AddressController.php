@@ -6,6 +6,7 @@ use App\DTO\AddressDTO;
 use Illuminate\Http\Request;
 use App\Models\Address;
 use App\Http\Requests\CreateAddressRequest;
+use App\Http\Requests\UpdateAddressRequest;
 use App\Http\Resources\AddressResource;
 use App\Services\AddressService;
 use Illuminate\Http\Response;
@@ -33,17 +34,10 @@ class AddressController extends Controller
         ]);
     }
 
-    public function update(Address $address, Request $request): JsonResponse
+    public function update(Address $address, UpdateAddressRequest $request): JsonResponse
     {
         try {
-            $addressDTO = new AddressDTO(
-                street: $request->input('street'),
-                city: $request->input('city'),
-                neighborhood: $request->input('neighborhood'),
-                state: $request->input('state'),
-                country: $request->input('country'),
-                zipCode: $request->input('zip_code')
-            );
+            $addressDTO = $request->validated();
 
             $updatedAddress = $this->addressService->updateAddress($address, $addressDTO);
         } catch (\Exception $e) {
@@ -80,14 +74,7 @@ class AddressController extends Controller
 
     public function store(CreateAddressRequest $request): JsonResponse
     {
-        $addressDTO = new AddressDTO(
-            street: $request->input('street'),
-            city: $request->input('city'),
-            neighborhood: $request->input('neighborhood'),
-            state: $request->input('state'),
-            country: $request->input('country'),
-            zipCode: $request->input('zip_code')
-        );
+        $addressDTO = AddressDTO::fromRequest($request);
 
         try {
             $newAddress = $this->addressService->createAddress($addressDTO);
@@ -105,7 +92,7 @@ class AddressController extends Controller
         ]);
     }
 
-    public function destroy(Address $address): JsonResponse
+    public function delete(Address $address): JsonResponse
     {
         try {
             $this->addressService->deleteAddress($address);

@@ -22,18 +22,11 @@ class AddressService implements AddressServiceInterface
         return $address;
     }
 
-    public function updateAddress(Address $address, AddressDTO $addressDTO): Address
+    public function updateAddress(Address $address, array $updatedData): Address
     {
         try {
-            $address->update([
-                'street' => $addressDTO->getStreet(),
-                'city' => $addressDTO->getCity(),
-                'neighborhood' => $addressDTO->getNeighborhood(),
-                'state' => $addressDTO->getState(),
-                'country' => $addressDTO->getCountry(),
-                'zip_code' => $addressDTO->getZipCode(),
-            ]);
-
+            
+            $address->update($updatedData);
             return $address;
         } catch (\Exception $e) {
             throw new \Exception('An error occurred while updating the Address: ' . $e->getMessage());
