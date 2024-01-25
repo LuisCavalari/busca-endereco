@@ -1,79 +1,55 @@
-
-# Setup Docker Para Projetos Laravel (8, 9 ou 10)
-[Assine a Academy, e Seja VIP!](https://academy.especializati.com.br)
-
-### Passo a passo
-Clone Repositório
+## Instalação
+Para instalação do projeto é necessário ter instalado o docker junto ao docker compose
+Primeiramente para rodar o projeto, clone o repositório
 ```sh
-git clone https://github.com/especializati/setup-docker-laravel.git
+    git clone https://github.com/LuisCavalari/busca-endereco.git
 ```
-
-Clone os Arquivos do Laravel
+Em seguida modifique o .env.example de acordo com seu ambiente e torne ele seu .env
 ```sh
-git clone https://github.com/laravel/laravel.git app-laravel
+    cp .env.example .env
 ```
-
-
-Copie os arquivos docker-compose.yml, Dockerfile e o diretório docker/ para o seu projeto
+Crie o container docker 
 ```sh
-cp -rf setup-docker-laravel/* app-laravel/
+    docker-compose up -d --build
 ```
+Execute o composer 
 ```sh
-cd app-laravel/
+    docker exec app composer install
 ```
-
-
-Crie o Arquivo .env
+Execute o npm
 ```sh
-cp .env.example .env
+    docker exec node npm install && npm run build
 ```
-
-
-Atualize as variáveis de ambiente do arquivo .env
-```dosini
-APP_NAME="Especializa Ti"
-APP_URL=http://localhost:8989
-
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=root
-DB_PASSWORD=root
-
-CACHE_DRIVER=redis
-QUEUE_CONNECTION=redis
-SESSION_DRIVER=redis
-
-REDIS_HOST=redis
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-```
-
-
-Suba os containers do projeto
+Execute as migrations 
 ```sh
-docker-compose up -d
+    docker exec app php artisan migrate
 ```
-
-
-Acessar o container
+Execute as seeds
 ```sh
-docker-compose exec app bash
+    docker exec app php artisan db:seed
 ```
+Por padrão a aplicação estara rodando na porta 8081, o frontend pode ser accessado em:
+http://localhost:8081
 
+## Rotas
+| Método HTTP | URI |
+| ------ | ------ |
+| GET |   /api/address/ |
+| GET |  /api/address/:id |
+| POST | /api/address/ |
+| PUT | /api/address/:id |
+| DELETE | /api/address/:id |
+| GET | /api/address/fuzzy-search?search_term=term |
+| GET | /api/address/search-by-zip-code/:zipcode |
 
-Instalar as dependências do projeto
-```sh
-composer install
+### Exemplo de payload para endpoint de criação
+```json
+ {
+        "street": "Avenida São João",
+        "neighborhood": "Vila Joana",
+        "city": "Jundiaí",
+        "state": "SP",
+        "country": "BR",
+        "zip_code": "13216000"
+    }
 ```
-
-
-Gerar a key do projeto Laravel
-```sh
-php artisan key:generate
-```
-
-
-Acessar o projeto
-[http://localhost:8989](http://localhost:8989)
