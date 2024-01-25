@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\AddressDTO;
 use Illuminate\Http\Request;
 use App\Models\Address;
 use App\Http\Requests\CreateAddressRequest;
 use App\Http\Resources\AddressResource;
+use App\Services\AddressService;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class AddressController extends Controller
 {
+    public function __construct(private AddressService $addressService) {}
+
     public function index(): JsonResponse
     {
-        $allAddresses = Address::all();
+        try {
+            $allAddresses = $this->addressService->getAllAddresses();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return response()->json([
             'success' => true,
@@ -24,49 +35,90 @@ class AddressController extends Controller
 
     public function update(Address $address, Request $request): JsonResponse
     {
+        try {
+            $addressDTO = new AddressDTO(
+                street: $request->input('street'),
+                city: $request->input('city'),
+                neighborhood: $request->input('neighborhood'),
+                state: $request->input('state'),
+                country: $request->input('country'),
+                zipCode: $request->input('zip_code')
+            );
+
+            $updatedAddress = $this->addressService->updateAddress($address, $addressDTO);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'An error occurred while updating the Address',
-            'error' => $e->getMessage(),
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            'success' => true,
+            'message' => 'Address updated',
+            'data' => new AddressResource($updatedAddress)
+        ]);
     }
 
     public function show(Address $address): JsonResponse
     {
-        if (! $address) {
+        try {
+            $addressData = $this->addressService->getAddressById($address);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Address not found'
+                'message' => $e->getMessage(),
             ], Response::HTTP_NOT_FOUND);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Addresses listed',
-            'data' => new AddressResource($address)
+            'data' => new AddressResource($addressData)
         ]);
     }
 
     public function store(CreateAddressRequest $request): JsonResponse
     {
-        $addressData = $request->all();
-        $newAddress = Address::create($addressData);
+        $addressDTO = new AddressDTO(
+            street: $request->input('street'),
+            city: $request->input('city'),
+            neighborhood: $request->input('neighborhood'),
+            state: $request->input('state'),
+            country: $request->input('country'),
+            zipCode: $request->input('zip_code')
+        );
+
+        try {
+            $newAddress = $this->addressService->createAddress($addressDTO);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return response()->json([
-                'success' => true,
-                'message' => 'Address created',
-                'data' => new AddressResource($newAddress)
-            ]);
+            'success' => true,
+            'message' => 'Address created',
+            'data' => new AddressResource($newAddress)
+        ]);
     }
 
     public function destroy(Address $address): JsonResponse
     {
-        $address->delete();
-        
+        try {
+            $this->addressService->deleteAddress($address);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return response()->json([
-                'success' => true,
-                'message' => 'Address created',
-                'data' => new AddressResource($newAddress)
-            ]);
+            'success' => true,
+            'message' => 'Address deleted',
+        ]);
     }
 }

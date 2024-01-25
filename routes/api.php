@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AddressFuzzySearchController;
+use App\Http\Controllers\SearchByZipCodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('address')->group(function () {
-    Route::post('/', [AddressController::class, 'store']);
+    Route::get('/search-by-zip-code/{zipCode}', SearchByZipCodeController::class);
+    Route::get('/fuzzy-search', AddressFuzzySearchController::class);
     Route::get('/', [AddressController::class, 'index']);
     Route::get('/{address}', [AddressController::class, 'show']);
+    Route::post('/', [AddressController::class, 'store']);
     Route::put('/{address}', [AddressController::class, 'update']);
     Route::delete('/{address}', [AddressController::class, 'delete']);
 });

@@ -20,28 +20,31 @@ services:
         restart: unless-stopped
         ports:
             - "8081:80"
-            - '${VITE_PORT:-5173}:5173'
         volumes:
             - ./:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
         networks:
             - laravel
 
-    db:
-        image: 'mysql/mysql-server:8.0'
-        restart: unless-stopped
+    mariadb:
+        image: 'mariadb:10'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
-            MYSQL_ROOT_HOST: '%'
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
             MYSQL_DATABASE: '${DB_DATABASE}'
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
-          - 'laraveldb:/var/lib/mysql'
-        ports:
-            - "3388:3306"
+            - 'laraveldb:/var/lib/mysql'
         networks:
             - laravel
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            retries: 3
+            timeout: 5s
     npm:
         tty: true
         image: node:20-alpine
@@ -49,6 +52,9 @@ services:
         volumes:
             - ./:/var/www/app
         working_dir: /var/www/app
+        command: bash -c "npm install && npm run build"
+        ports:
+            - "5173:5173"
     redis:
         image: redis:latest
         networks:

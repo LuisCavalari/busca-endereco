@@ -16,12 +16,67 @@ class AddressSeeder extends Seeder
         $baseAddresses = [
             [
                 'street'       => 'Rua Antonio Natal',
-                'number'       => '61',
                 'neighborhood' => 'Jardim Amélia',
                 'city'         => 'Pinhais',
-                'state'        => 'Parana',
-                'country'      => 'Brasil',
-                'zip_code'     => '83330-310'
+                'state'        => 'PR',
+                'country'      => 'BR',
+                'zip_code'     => '83330310'
+            ],
+            [
+                'street'       => 'Avenida São João',
+                'neighborhood' => 'Vila Joana',
+                'city'         => 'Jundiaí',
+                'state'        => 'SP',
+                'country'      => 'BR',
+                'zip_code'     => '13216000'
+            ],
+            [
+                'street'       => 'Rua dos Carijós',
+                'neighborhood' => 'Centro',
+                'city'         => 'Belo Horizonte',
+                'state'        => 'MG',
+                'country'      => 'BR',
+                'zip_code'     => '30120060'
+            ],
+            [
+                'street'       => 'QE 11 Área Especial C',
+                'neighborhood' => 'Guará I',
+                'city'         => 'Brasília',
+                'state'        => 'DF',
+                'country'      => 'BR',
+                'zip_code'     => '71020631'
+            ],
+            [
+                'street'       => 'Rua Cristiano Olsen',
+                'neighborhood' => 'Jardim Sumaré',
+                'city'         => 'Araçatuba',
+                'state'        => 'SP',
+                'country'      => 'BR',
+                'zip_code'     => '16015244'
+            ],
+            [
+                'street'       => 'Rodovia Raposo Tavares',
+                'neighborhood' => 'Lageadinho',
+                'city'         => 'Cotia',
+                'state'        => 'SP',
+                'country'      => 'BR',
+                'zip_code'     => '06709015'
+            ],
+            [
+                'street'       => 'Travessa da CDL',
+                'neighborhood' => 'Centro',
+                'city'         => 'Ji-Paraná',
+                'state'        => 'RO',
+                'country'      => 'BR',
+                'zip_code'     => '76900032'
+            ],
+            [
+                'street'       => 'Avenida Almirante Maximiano Fonseca',
+                'neighborhood' => 'Zona Portuária',
+                'city'         => 'Rio Grande',
+                'state'        => 'RS',
+                'country'      => 'BR',
+                'zip_code'     => '96204040'
             ]
         ];
 
